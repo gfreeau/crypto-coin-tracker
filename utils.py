@@ -1,7 +1,19 @@
+import sys
+from typing import List
+
 def merge_configurations(default_config: dict, user_config: dict) -> dict:
     merged_config = default_config.copy()
     merged_config.update(user_config)
     return merged_config
+
+def validate_currency_prices(prices: List, supported_currencies: List):
+    if not prices:
+        sys.exit("Error: No prices found for the specified coins.")
+
+    first_price = list(prices.values())[0]
+    for currency in supported_currencies:
+        if currency.lower() not in first_price:
+            sys.exit(f"Error: No price found for currency '{currency}'.")
 
 def get_currency_symbol(currency: str) -> str:
     symbols = {

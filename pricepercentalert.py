@@ -2,11 +2,68 @@ import json
 import sys
 from argparse import ArgumentParser
 import coingecko
-from utils import get_currency_symbol, format_currency
+from utils import validate_currency_prices, get_currency_symbol, format_currency
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
+from jsonschema import validate, ValidationError
+
+config_schema = {
+    "type": "object",
+    "properties": {
+        "coins": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "coinId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3
+                    }
+                },
+                "required": ["coinId", "currency"]
+            }
+        },
+        "alertPercent": {
+            "type": "number",
+            "minimum": 1,
+        },
+        "sendEmail": {
+            "type": "boolean"
+        },
+        "email": {
+            "type": "string",
+            "format": "email"
+        },
+        "smtp": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": ["host", "port", "username", "password"]
+        }
+    },
+    "required": ["coins", "alertPercent", "sendEmail", "email", "smtp"]
+}
 
 def parse_args():
     parser = ArgumentParser(description="Monitor cryptocurrency price changes of a defined percentage and send alerts.")
@@ -39,11 +96,18 @@ def main():
     except json.JSONDecodeError:
         sys.exit("Error: Failed to decode JSON from the provided file.")
     
+    try:
+        validate(instance=config, schema=config_schema)
+    except ValidationError as e:
+        error_path = " -> ".join(map(str, e.path))
+        sys.exit(f"Error: Configuration file validation failed at '{error_path}': {e.message}. Look at the sample configs to see how to structure the configuration.")
+
     coin_ids = [coin['coinId'] for coin in config['coins']]
     currencies = list(set(coin['currency'] for coin in config['coins']))
 
     try:
         prices = coingecko.fetch_price_data(coin_ids, currencies)
+        validate_currency_prices(prices, currencies)
     except Exception as e:
         sys.exit(str(e))
     

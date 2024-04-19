@@ -50,6 +50,8 @@ python portfolio.py config/portfolio.json
 
 **Sample Config**: `config/portfolio.json.example`
 
+**Note**: You can configure the currencies displayed. The `defaultCurrency` is used for the 24 hour comparisons and is shown for each crypto holding. The other `currencies` config option allows you to show the total portfolio value in whatever currency you like including crypto such as BTC.
+
 **Note**: Use `coinsearch.py` (documented later in this README) to find the correct coin ids for use in all configuration files. This is needed because some coins use the same symbol like BTC (scams, memes etc). We need to make sure we use the unique coin ID in the configuration files, so for example, don't use BTC, use `bitcoin` instead which `coinsearch.py` will tell you if you search for `BTC`.
 
 Here's what it looks like:
@@ -69,7 +71,7 @@ Here's what it looks like:
 +------+-------+--------+-------------+-------------+-------------+
 ```
 
-The currencies shown and crypto holdings are all completely configurable. I like being able to see portfolio holdings in multiple currencies and crypto such as BTC.
+Above AUD is the default currency and USD, BTC and ETH are configured as additional currencies to display.
 
 ### 2. Price Alert (`pricealert.py`)
 
@@ -82,6 +84,8 @@ python pricealert.py config/pricealert.json
 
 **Sample Config**: `config/pricealert.json.example`
 
+**Note**: Percentages are represented by whole numbers in the config so 10 means 10%. See `increasePercent`
+
 Here's what it looks like:
 
 ```
@@ -92,7 +96,7 @@ XRP is now USD $0.5018
 BAT is now USD $0.2514
 ```
 
-After running it will save a cache file. The output text only appears (and alerts by e-mail) if the coin has increased by the configured threshold (10% by default) and e-mail alerts are turned on. I recomend configuring this as a cron job to run hourly.
+After running it will save a cache file. The output text only appears (and alerts by e-mail) if the coin has increased by the configured threshold (10% by default) and e-mail alerts are turned on. If you are running it the first time, it will always alert before caching the threshold. I recomend configuring this as a cron job to run hourly.
 
 ### 3. Fiat Purchase Simulator (`fiatpurchase.py`)
 

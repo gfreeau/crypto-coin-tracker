@@ -40,4 +40,8 @@ def test_missing_config(base_setup, check_configuration_errors):
 
 def test_malformed_config(base_setup, check_configuration_errors):
     base_setup('portfolio_malformed.json')
-    check_configuration_errors(main, "Should be a number not")
+    check_configuration_errors(main, "'shouldbeanumber' is not of type 'number'")
+
+def test_malformed_currency_config(base_setup, check_configuration_errors):
+    base_setup('portfolio_malformed_currency.json')
+    check_configuration_errors(main, "No price found for currency 'NOTVALID'")

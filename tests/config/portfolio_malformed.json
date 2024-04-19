@@ -1,11 +1,11 @@
 {
-  "investmentAmount": "shouldbeanumber",
+  "investmentAmount": 0,
   "defaultCurrency": "AUD",
   "currencies": [],
   "holdings": [
     {
       "coinId": "bitcoin",
-      "units": "1000"
+      "units": "shouldbeanumber"
     }
   ]
 }

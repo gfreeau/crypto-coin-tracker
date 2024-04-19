@@ -3,7 +3,7 @@ import os
 import sys
 from argparse import ArgumentParser
 import coingecko
-from utils import merge_configurations, get_currency_symbol, format_currency
+from utils import validate_currency_prices, get_currency_symbol, format_currency
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -17,25 +17,51 @@ config_schema = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "coinId": {"type": "string"},
-                    "currency": {"type": "string"}
+                    "coinId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3
+                    }
                 },
                 "required": ["coinId", "currency"]
             },
         },
-        "sendEmail": {"type": "boolean"},
-        "email": {"type": "string"},
+        "increasePercent": {
+            "type": "number",
+            "minimum": 1 # A percentage increase of at least 1% is represented by the whole number 1 and not 0.01
+        },
+        "sendEmail": {
+            "type": "boolean"
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+        },
         "smtp": {
             "type": "object",
             "properties": {
-                "host": {"type": "string"},
-                "port": {"type": "integer"},
-                "username": {"type": "string"},
-                "password": {"type": "string"}
+                "host": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
             },
             "required": ["host", "port", "username", "password"]
-        },
-        "increasePercent": {"type": "number"}
+        }
     },
     "required": ["coins", "sendEmail", "email", "smtp", "increasePercent"]
 }
@@ -81,7 +107,8 @@ def main(cache_directory=None):
     try:
         validate(instance=config, schema=config_schema)
     except ValidationError as e:
-        sys.exit(f"Error: Configuration file validation failed: {e.message}. Look at the sample configs to see how to structure the configuration.")
+        error_path = " -> ".join(map(str, e.path))
+        sys.exit(f"Error: Configuration file validation failed at '{error_path}': {e.message}. Look at the sample configs to see how to structure the configuration.")
 
     if not config['coins']:
         sys.exit("Error: No coins specified in the configuration.")
@@ -107,6 +134,7 @@ def main(cache_directory=None):
 
     try:
         prices = coingecko.fetch_price_data(coin_ids, currencies)
+        validate_currency_prices(prices, currencies)
     except Exception as e:
         sys.exit(str(e))
 

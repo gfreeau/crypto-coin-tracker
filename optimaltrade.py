@@ -7,7 +7,72 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import coingecko
-from utils import format_currency
+from utils import validate_currency_prices, format_currency
+from jsonschema import validate, ValidationError
+
+config_schema = {
+    "type": "object",
+    "properties": {
+        "currency": {
+            "type": "string",
+            "minLength": 3
+        },
+        "trades": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "sellCoinId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "sellUnits": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                    },
+                    "buyCoinId": {
+                        "type": "string",
+                        "minLength": 1 
+                    },
+                    "buyUnits": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                    }
+                },
+                "required": ["sellCoinId", "sellUnits", "buyCoinId", "buyUnits"]
+            }
+        },
+        "sendEmail": {
+            "type": "boolean"
+        },
+        "email": {
+            "type": "string",
+            "format": "email"
+        },
+        "smtp": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "exclusiveMaximum": 65536
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": ["host", "port", "username", "password"]
+        }
+    },
+    "required": ["currency", "trades", "sendEmail", "email", "smtp"]
+}
 
 def parse_args():
     parser = ArgumentParser(description="Optimal trade calculator and alert system.")
@@ -40,10 +105,22 @@ def main():
         except json.JSONDecodeError:
             sys.exit("Error: Failed to decode JSON from the provided file.")
 
+    try:
+        validate(instance=config, schema=config_schema)
+    except ValidationError as e:
+        error_path = " -> ".join(map(str, e.path))
+        sys.exit(f"Error: Configuration file validation failed at '{error_path}': {e.message}. Look at the sample configs to see how to structure the configuration.")
+
     currency = config.get('currency', 'aud').lower()
 
     coin_ids = {trade['sellCoinId'] for trade in config['trades']} | {trade['buyCoinId'] for trade in config['trades']}
-    prices = coingecko.fetch_price_data(list(coin_ids), [currency, 'btc'])
+    
+    try:
+        prices = coingecko.fetch_price_data(list(coin_ids), [currency, 'btc'])
+        validate_currency_prices(prices, [currency, 'btc'])
+    except Exception as e:
+        print(str(e))
+        sys.exit(1)
 
     alert = False
     table = PrettyTable()

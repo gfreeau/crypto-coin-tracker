@@ -1,0 +1,11 @@
+{
+    "investmentAmount": 1000,
+    "defaultCurrency": "notvalid",
+    "currencies": ["notvalid2"],
+    "holdings": [
+      {
+        "coinId": "bitcoin",
+        "units": 2
+      }
+    ]
+  }

@@ -4,7 +4,51 @@ import sys
 import argparse
 from prettytable import PrettyTable
 import coingecko
-from utils import merge_configurations, get_currency_symbol, format_currency
+from utils import validate_currency_prices, merge_configurations, get_currency_symbol, format_currency
+from jsonschema import validate, ValidationError
+
+config_schema = {
+    "type": "object",
+    "properties": {
+        "purchases": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "coinId": {
+                        "type": "string",
+                        "minLength": 1 
+                    },
+                    "unitAmount": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Amount of cryptocurrency to purchase in units"
+                    },
+                    "currencyAmount": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Amount of fiat currency to spend"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3
+                    }
+                },
+                "required": ["coinId", "currency"],  # Require coinId and currency for each purchase
+                "oneOf": [  # Ensure that either unitAmount or currencyAmount is provided, but not necessarily both
+                    {
+                        "required": ["unitAmount"]
+                    },
+                    {
+                        "required": ["currencyAmount"]
+                    }
+                ]
+            }
+        }
+    },
+    "required": ["purchases"]
+}
+
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -31,6 +75,12 @@ def main():
         print(f"Config file error: {str(e)}")
         sys.exit(1)
 
+    try:
+        validate(instance=config, schema=config_schema)
+    except ValidationError as e:
+        error_path = " -> ".join(map(str, e.path))
+        sys.exit(f"Error: Configuration file validation failed at '{error_path}': {e.message}. Look at the sample configs to see how to structure the configuration.")
+
     if not config['purchases']:
         sys.exit("Error: No purchases found in the configuration.")
 
@@ -42,6 +92,7 @@ def main():
 
     try:
         prices = coingecko.fetch_price_data(coin_ids, currencies)
+        validate_currency_prices(prices, currencies)
     except Exception as e:
         print(str(e))
         sys.exit(1)

@@ -4,7 +4,48 @@ import argparse
 from prettytable import PrettyTable
 import os
 import coingecko
-from utils import merge_configurations, get_currency_symbol, format_currency
+from utils import merge_configurations, validate_currency_prices, get_currency_symbol, format_currency
+from jsonschema import validate, ValidationError
+
+config_schema = {
+    "type": "object",
+    "properties": {
+        "investmentAmount": {
+            "type": "number",
+            "minimum": 0
+        },
+        "defaultCurrency": {
+            "type": "string",
+            "minLength": 3
+        },
+        "currencies": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 3
+            }
+        },
+        "holdings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "coinId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "units": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                    }
+                },
+                "required": ["coinId", "units"]
+            }
+        }
+    },
+    "required": ["investmentAmount", "defaultCurrency", "currencies", "holdings"]
+}
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Display cryptocurrency portfolio based on CoinGecko data.")
@@ -34,9 +75,10 @@ def main():
         sys.exit("Error: Failed to decode JSON from the provided file.")
 
     try:
-        int(portfolio['investmentAmount'])
-    except ValueError:
-        sys.exit(f"Error: Invalid units value for investmentAmount. Should be a number not '{portfolio['investmentAmount']}'.")
+        validate(instance=portfolio, schema=config_schema)
+    except ValidationError as e:
+        error_path = " -> ".join(map(str, e.path))
+        sys.exit(f"Error: Configuration file validation failed at '{error_path}': {e.message}. Look at the sample configs to see how to structure the configuration.")
 
     if not portfolio['holdings']:
         sys.exit("Error: The portfolio holdings are empty in the supplied config.")
@@ -49,6 +91,7 @@ def main():
 
     try:
         prices = coingecko.fetch_price_data(ids, supported_currencies)
+        validate_currency_prices(prices, supported_currencies)
     except Exception as e:
         sys.exit(str(e))
 
@@ -57,13 +100,7 @@ def main():
 
     for holding in portfolio['holdings']:
         id = holding['coinId']
-
-        try:
-            units = int(holding['units'])
-        except ValueError:
-            sys.exit(f"Error: Invalid units value for {id}. Should be a number not '{holding['units']}'.")
-
-        units = int(holding['units'])
+        units = holding['units']
         currency_value = prices[id][default_currency.lower()] * units
         total_value[default_currency] += currency_value
         change_24h_currency = prices[id][f"{default_currency.lower()}_24h_change"]
