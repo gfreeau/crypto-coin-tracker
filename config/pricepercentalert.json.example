@@ -1,0 +1,25 @@
+{
+  "coins": [
+    {
+      "coinId": "bitcoin",
+      "currency": "USD"
+    },
+    {
+      "coinId": "ethereum",
+      "currency": "USD"
+    },
+    {
+      "coinId": "ripple",
+      "currency": "AUD"
+    }
+  ],
+  "alertPercent": 10,
+  "sendEmail": false,
+  "email": "my@email.com",
+  "smtp": {
+    "host": "smtp.server.com",
+    "port": 587,
+    "username": "",
+    "password": ""
+  }
+}

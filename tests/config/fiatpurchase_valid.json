@@ -1,0 +1,14 @@
+{
+  "purchases": [
+    {
+      "coinId": "bitcoin",
+      "unitAmount": 1,
+      "currency": "AUD"
+    },
+    {
+      "coinId": "ripple",
+      "currencyAmount": 10000,
+      "currency": "AUD"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "investmentAmount": 10000,
+  "defaultCurrency": "AUD",
+  "currencies": [
+    "AUD",
+    "USD",
+    "BTC",
+    "ETH"
+  ],
+  "holdings": [
+    {
+      "coinId": "bitcoin",
+      "units": 1
+    },
+    {
+      "coinId": "ethereum",
+      "units": 10
+    },
+    {
+      "coinId": "ripple",
+      "units": 10000
+    }
+  ]
+}

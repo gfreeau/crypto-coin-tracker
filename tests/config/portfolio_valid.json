@@ -1,0 +1,15 @@
+{
+  "investmentAmount": 50000,
+  "defaultCurrency": "AUD",
+  "currencies": [],
+  "holdings": [
+    {
+      "coinId": "bitcoin",
+      "units": 3
+    },
+    {
+      "coinId": "ethereum",
+      "units": 5
+    }
+  ]
+}

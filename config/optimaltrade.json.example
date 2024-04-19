@@ -1,0 +1,25 @@
+{
+  "currency": "AUD",
+  "trades": [
+    {
+      "sellCoinId": "bitcoin",
+      "sellUnits": 1,
+      "buyCoinId": "ethereum",
+      "buyUnits": 20
+    },
+    {
+      "sellCoinId": "basic-attention-token",
+      "sellUnits": 10000,
+      "buyCoinId": "ripple",
+      "buyUnits": 4000
+    }
+  ],
+  "sendEmail": false,
+  "email": "my@email.com",
+  "smtp": {
+    "host": "smtp.server.com",
+    "port": 587,
+    "username": "",
+    "password": ""
+  }
+}

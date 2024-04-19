@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch portfolio.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/portfolio.py",
+            "console": "integratedTerminal",
+            "args": ["config/portfolio.json"]
+        },
+        {
+            "name": "Launch pricealert.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/pricealert.py",
+            "console": "integratedTerminal",
+            "args": ["config/pricealert.json"]
+        },
+        {
+            "name": "Launch fiatpurchase.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/fiatpurchase.py",
+            "console": "integratedTerminal",
+            "args": ["config/fiatpurchase.json"]
+        },
+        {
+            "name": "Launch optimaltrade.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/optimaltrade.py",
+            "console": "integratedTerminal",
+            "args": ["config/optimaltrade.json"]
+        }
+    ]
+}
