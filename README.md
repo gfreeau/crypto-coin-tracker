@@ -98,6 +98,21 @@ BAT is now USD $0.2514
 
 After running it will save a cache file. The output text only appears (and alerts by e-mail) if the coin has increased by the configured threshold (10% by default) and e-mail alerts are turned on. If you are running it the first time, it will always alert before caching the threshold. I recomend configuring this as a cron job to run hourly.
 
+A script like the following works for cron:
+
+```bash
+#!/bin/bash
+
+# Define the base directory
+BASE_DIR="/path/to/crypto-coin-tracker"
+
+# Activate the virtual environment
+source "$BASE_DIR/venv/bin/activate"
+
+# Run the Python script with its configuration
+python "$BASE_DIR/pricealert.py" "$BASE_DIR/config/pricealert.json"
+```
+
 ### 3. Fiat Purchase Simulator (`fiatpurchase.py`)
 
 **Description**: Calculates how much cryptocurrency can be purchased with a specified amount of fiat currency.
