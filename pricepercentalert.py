@@ -67,7 +67,7 @@ config_schema = {
 
 def parse_args():
     parser = ArgumentParser(description="Monitor cryptocurrency price changes of a defined percentage and send alerts.")
-    parser.add_argument('config_file', type=str, help="Path to the configuration JSON file. pricepercentalert.json is an example.")
+    parser.add_argument('config_file', type=str, help="Path to the configuration JSON file. See config/pricepercentalert.json.example for an example.")
     return parser.parse_args()
 
 def send_email(config, message):

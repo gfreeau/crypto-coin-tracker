@@ -53,7 +53,7 @@ config_schema = {
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Shows how much crypto can be purchased for an equivalent fiat amount.")
-    parser.add_argument("config_file", help="Path to the configuration JSON file. fiatpurchase.json is an example.")
+    parser.add_argument("config_file", help="Path to the configuration JSON file. See config/fiatpurchase.json.example for an example.")
     return parser.parse_args()
 
 def main():

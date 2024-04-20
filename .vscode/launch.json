@@ -18,6 +18,14 @@
             "args": ["config/pricealert.json"]
         },
         {
+            "name": "Launch pricepercentalert.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/pricepercentalert.py",
+            "console": "integratedTerminal",
+            "args": ["config/pricepercentalert.json"]
+        },
+        {
             "name": "Launch fiatpurchase.py",
             "type": "debugpy",
             "request": "launch",
@@ -32,6 +40,14 @@
             "program": "${workspaceFolder}/optimaltrade.py",
             "console": "integratedTerminal",
             "args": ["config/optimaltrade.json"]
+        },
+        {
+            "name": "Launch optimalpurchase.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/optimalpurchase.py",
+            "console": "integratedTerminal",
+            "args": ["config/optimalpurchase.json"]
         }
     ]
 }

@@ -174,7 +174,29 @@ python pricepercentalert.py config/pricepercentalert.json
 
 This command is very similar to `pricepercent.py` except it can be more noisy as it notifies based on absolute percent change (positive or negative). Just depends on your preference. The default `alertPercent` is 10% change. I recommend setting it up as a cron job.
 
-### 6. Coin Search (`coinsearch.py`)
+### 6. Optimal Purchase Calculator (`optimalpurchase.py`)
+
+**Description**: Calculates the optimal purchase prices for cryptocurrencies based on predefined targets and provides real-time price comparisons. It also sends email alerts if the purchase conditions align with specified price targets.
+
+**Usage**:
+```bash
+python optimalpurchase.py config/optimalpurchase.json
+```
+
+**Sample Config**: `config/optimalpurchase.json.example`
+
+Here's what it looks like:
+
+```
++-------+----------------+----------------+----------------+-------------------+------------+
+|  Buy  | Current Price  |  Target Price  |   Unit Price   | Target Unit Price | Price Diff |
++-------+----------------+----------------+----------------+-------------------+------------+
+| 1 BTC | $64,041.00 USD | $70,000.00 USD | $64,041.00 USD |   $70,000.00 USD  |   -8.51%   |
+| 3 ETH | $9,179.01 USD  | $20,000.00 USD | $3,059.67 USD  |   $6,666.67 USD   |  -54.10%   |
++-------+----------------+----------------+----------------+-------------------+------------+
+```
+
+### 7. Coin Search (`coinsearch.py`)
 
 **Description**: Helps users find CoinGecko IDs for cryptocurrencies by symbol, which are needed for the configuration files of other scripts in this suite.
 

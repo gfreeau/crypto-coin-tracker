@@ -1,0 +1,25 @@
+{
+  "showOptimalOnly": false,
+  "purchases": [
+    {
+      "coinId": "bitcoin",
+      "buyUnits": 1,
+      "price": 90000,
+      "currency": "AUD"
+    },
+    {
+      "coinId": "ethereum",
+      "buyUnits": 3,
+      "price": 18000,
+      "currency": "AUD"
+    }
+  ],
+  "sendEmail": false,
+  "email": "my@email.com",
+  "smtp": {
+    "host": "smtp.server.com",
+    "port": 587,
+    "username": "",
+    "password": ""
+  }
+}

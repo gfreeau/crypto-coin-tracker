@@ -1,6 +1,4 @@
 from pricealert import main
-from unittest.mock import patch
-from pricealert import main
 
 def test_main_output(base_setup, tmp_path):
     mock_stdout = base_setup('pricealert_valid.json')

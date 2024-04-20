@@ -13,6 +13,10 @@ from jsonschema import validate, ValidationError
 config_schema = {
     "type": "object",
     "properties": {
+        "showOptimalOnly": {
+            "type": "boolean",
+            "description": "If this is true only coins that are below the target price will be shown in the table otherwise all of them will show."
+        },
         "currency": {
             "type": "string",
             "minLength": 3
@@ -71,12 +75,12 @@ config_schema = {
             "required": ["host", "port", "username", "password"]
         }
     },
-    "required": ["currency", "trades", "sendEmail", "email", "smtp"]
+    "required": ["showOptimalOnly", "currency", "trades", "sendEmail", "email", "smtp"]
 }
 
 def parse_args():
     parser = ArgumentParser(description="Optimal trade calculator and alert system.")
-    parser.add_argument('config_file', type=str, help="Path to the configuration JSON file.")
+    parser.add_argument('config_file', type=str, help="Path to the configuration JSON file. See config/optimaltrade.json.example for an example.")
     return parser.parse_args()
 
 def send_email(config, message):
@@ -138,6 +142,11 @@ def main():
         price_ratio = sell_coin['btc'] / buy_coin['btc']
         current_buy = trade['sellUnits'] * price_ratio
 
+        if current_buy > trade['buyUnits']:
+            alert = True
+        elif config['showOptimalOnly']:
+            continue
+
         target_sell_price = trade['buyUnits'] / trade['sellUnits']
         target_buy_price = 1 / target_sell_price
 
@@ -158,7 +167,6 @@ def main():
             f"{buy_symbol}: {format_currency(current_buy_price_currency)}",
             f"{buy_symbol}: {format_currency(target_buy_price_currency)}",
         ])
-        alert = True
 
     if table.rows:
         print(table)

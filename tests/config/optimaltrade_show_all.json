@@ -1,5 +1,5 @@
 {
-  "showOptimalOnly": true,
+  "showOptimalOnly": false,
   "currency": "AUD",
   "trades": [
     {
@@ -9,10 +9,10 @@
       "buyUnits": 20
     },
     {
-      "sellCoinId": "basic-attention-token",
-      "sellUnits": 10000,
+      "sellCoinId": "ethereum",
+      "sellUnits": 2,
       "buyCoinId": "ripple",
-      "buyUnits": 4000
+      "buyUnits": 50000
     }
   ],
   "sendEmail": false,

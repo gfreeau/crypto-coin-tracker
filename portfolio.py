@@ -49,7 +49,7 @@ config_schema = {
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Display cryptocurrency portfolio based on CoinGecko data.")
-    parser.add_argument('config_file', type=str, help='The JSON file containing the portfolio data. portfolio.json is an example.')
+    parser.add_argument('config_file', type=str, help='The JSON file containing the portfolio data. See config/portfolio.json.example for an example.')
     return parser.parse_args()
 
 def main():
